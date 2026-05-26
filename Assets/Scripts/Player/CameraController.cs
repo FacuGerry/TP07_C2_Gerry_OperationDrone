@@ -86,6 +86,8 @@ public class CameraController : MonoBehaviour
 
         float rotationX = transform.localEulerAngles.x;
 
+        // Error: la condición es imposible. Con _rotationMaxVer=75 y _rotationMinVer=-25, ningún número puede ser
+        // simultáneamente mayor a 75 Y menor a -25. El operador && debería ser ||. El clamp vertical NUNCA se ejecuta.
         if ((rotationX > _rotationMaxVer) && (rotationX < _rotationMinVer))
         {
             if ((rotationX - _rotationMaxVer) < (_rotationMinVer - rotationX))

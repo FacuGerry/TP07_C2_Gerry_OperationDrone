@@ -18,7 +18,7 @@ public class PauseGame : MonoBehaviour
     {
         UiPauseMenu.OnBackClicked += OnBackClicked_Unpause;
     }
-
+    
     private void Update()
     {
         if (Input.GetKeyDown(_keys.pause) || Input.GetKeyDown(_keys.pause2) || Input.GetKeyDown(_keys.pause3))
@@ -27,6 +27,7 @@ public class PauseGame : MonoBehaviour
 
     private void OnDisable()
     {
+        // Error: acá se está suscribiendo (+=) en vez de desuscribir (-=). Debería ser "-= OnBackClicked_Unpause".
         UiPauseMenu.OnBackClicked += OnBackClicked_Unpause;
     }
 

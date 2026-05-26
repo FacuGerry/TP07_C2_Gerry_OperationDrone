@@ -14,7 +14,7 @@ public class UiLifeBar : MonoBehaviour
     {
         HealthSystem.OnUpdateLife -= OnUpdateLife_UpdateLifeBar;
     }
-
+    
     private void OnUpdateLife_UpdateLifeBar(int life, int maxLife)
     {
         float lerp = life / (float)maxLife;

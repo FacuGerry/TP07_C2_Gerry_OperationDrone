@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BulletMovement : MonoBehaviour
 {
+    // Suggestion: typo "corroutine" → "coroutine". Aparece repetido en varios scripts del proyecto.
     private IEnumerator _corroutineMoving;
 
     private void OnDestroy()

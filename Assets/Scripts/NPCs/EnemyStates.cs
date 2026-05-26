@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public abstract partial class EnemyStates 
+// Warning: la clase está marcada como "partial" pero no existe otra declaración partial en el proyecto. El keyword sobra.
+public abstract partial class EnemyStates
 {
     public StateType state;
     protected Animator _anim;
@@ -23,6 +24,7 @@ public abstract partial class EnemyStates
 
     public virtual void OnEnter()
     {
+        // Warning: Debug.Log se ejecuta cada vez que un NPC cambia de estado. Con muchos NPCs en escena la consola se inunda y afecta performance. Envolver en #if UNITY_EDITOR o quitar.
         Debug.Log("Enter to " + state);
     }
 
@@ -30,6 +32,7 @@ public abstract partial class EnemyStates
 
     public virtual void OnExit()
     {
+        // Warning: mismo problema que el Debug.Log de OnEnter.
         Debug.Log("Exit from " + state);
     }
 }

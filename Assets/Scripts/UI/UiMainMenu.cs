@@ -22,9 +22,11 @@ public class UiMainMenu : MonoBehaviour
     [SerializeField] private CanvasGroup _canvasCredits;
     [SerializeField] private Button _btnBackCredits;
 
+    // Warning: el [Header("Credits")] está duplicado. Este header es para _fadeDuration y debería decir algo como "Transitions" o "Fade".
     [Header("Credits")]
     [SerializeField] private float _fadeDuration;
 
+    // Suggestion: typo "corroutine" → "coroutine". Aparece repetido en varios scripts del proyecto.
     private IEnumerator _changingCorroutine;
 
     private void Start()
@@ -58,7 +60,7 @@ public class UiMainMenu : MonoBehaviour
         float clock = _fadeDuration;
         while (clock > 0)
         {
-            clock -= Time.deltaTime;
+            clock -= Time.unscaledDeltaTime;
             float lerp = clock / _fadeDuration;
             canvasOff.alpha = lerp;
             yield return null;
@@ -66,7 +68,7 @@ public class UiMainMenu : MonoBehaviour
         clock = 0;
         while (clock < _fadeDuration)
         {
-            clock += Time.deltaTime;
+            clock += Time.unscaledDeltaTime;
             float lerp = clock / _fadeDuration;
             canvasOn.alpha = lerp;
             yield return null;

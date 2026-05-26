@@ -8,6 +8,7 @@ public class CollisionController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         OnPlayerCrashed?.Invoke((int)collision.relativeVelocity.magnitude);
+        // Warning: Debug.Log en cada colisión inunda la consola.
         Debug.Log("player collided");
     }
 }

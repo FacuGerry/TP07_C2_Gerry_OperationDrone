@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class SfxManager : MonoBehaviour
 {
+    // Suggestion: singleton expuesto como campo público static. Convención más segura:
+    // "public static SfxManager Instance { get; private set; }" para que nadie de afuera pueda sobreescribirlo.
     public static SfxManager instance;
 
     [Header("Sources")]
@@ -22,7 +24,7 @@ public class SfxManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private AudioClip _btnHover;
     [SerializeField] private AudioClip _btnClick;
-
+    
     private void Awake()
     {
         if (instance != null)
@@ -48,6 +50,8 @@ public class SfxManager : MonoBehaviour
 
         NpcController.OnNpcShoot += OnEnemyShoot_PlayClip;
 
+        // Warning: la clase referenciada se llama UiButtonHoverSFXEvent pero el archivo es UiBtnHoverSFXEvent.cs.
+        // Unity tira warning por el mismatch entre nombre de archivo y nombre de clase.
         UiButtonHoverSFXEvent.OnButtonHover += OnButtonHover_PlayClip;
         UiButtonHoverSFXEvent.OnButtonClick += OnButtonClick_PlayClip;
     }

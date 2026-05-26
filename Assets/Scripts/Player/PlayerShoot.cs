@@ -24,6 +24,7 @@ public class PlayerShoot : MonoBehaviour
     private bool _startedShooting = false;
 
     private bool _isPaused = false;
+    // Suggestion: typo "corroutine" → "coroutine". Aparece repetido en varios scripts del proyecto.
     private IEnumerator _corroutineShoot;
 
     private void Awake()
@@ -66,6 +67,9 @@ public class PlayerShoot : MonoBehaviour
                 StartCoroutine(_corroutineShoot);
             }
 
+            // Warning: este bloque se ejecuta TODOS los frames mientras no se esté disparando. Llama a StopCoroutine
+            // sobre una coroutine que ya está frenada cientos de veces por segundo. Unity lo tolera pero es trabajo en vano.
+            // Mover el StopCoroutine al evento GetKeyUp del shoot (que ya está arriba).
             if (!_isShooting)
                 if (_corroutineShoot != null)
                     StopCoroutine(_corroutineShoot);
@@ -88,12 +92,15 @@ public class PlayerShoot : MonoBehaviour
         {
             OnPlayerShoot?.Invoke();
             RaycastHit ray;
+            // Warning: _shootingPos ya es un Transform; ".transform" es redundante. Usar directamente _shootingPos.position.
             if (Physics.Raycast(_shootingPos.transform.position, transform.forward, out ray, _normalBulletDistance))
                 if (ray.collider != null && ray.collider.TryGetComponent(out NpcHealthSystem npc))
                 {
                     npc.OnNormalShot_TakeDamage(_bulletDamage);
+                    // Warning: Debug.Log dentro de la coroutine de disparo. Cada hit lo loguea.
                     Debug.Log("Hit an NPC");
                 }
+            // Warning: magic number 0.3f como cadencia del disparo. Debería ser un campo serializado configurable y no un magic number!!
             yield return new WaitForSeconds(0.3f);
         }
     }

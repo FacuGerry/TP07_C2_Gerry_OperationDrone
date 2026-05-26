@@ -8,6 +8,7 @@ public class NpcController : MonoBehaviour
 {
     public static event Action OnNpcShoot;
 
+    // Warning: campo público; debería ser [SerializeField] private con accessor o propiedad de sólo lectura.
     public List<Vector3> positions = new List<Vector3>();
     [SerializeField] private GameObject _player;
     [SerializeField] private GameObject _placeToAim;
@@ -27,12 +28,14 @@ public class NpcController : MonoBehaviour
     private Rigidbody _rb;
     private NavMeshAgent _agent;
 
+    // Warning: campo público; debería ser propiedad con getter público y setter privado/serializado.
     public bool isEnemy;
 
     private bool _isShooting;
 
     private float _shootingSpeed;
 
+    // Suggestion: typo "corroutine" → "coroutine".
     private IEnumerator _corroutineShoot;
     private bool _isPaused = false;
 
@@ -60,6 +63,8 @@ public class NpcController : MonoBehaviour
         SwitchState(FindState(StateType.Walk));
 
         _agent.speed = _data.speed;
+        // Warning: (_data.level / 10) es división entera. Hasta nivel 9 el resto es 0 (sin cambio). Correcto era: (_data.level / 10.0f)
+        // Recién en nivel 10 cambia en 1 — los "saltos" son escalonados, no graduales. Si se busca rampa suave, usar float.
         _shootingSpeed = _data.shootingSpeed - (_data.level / 10);
     }
 
@@ -96,6 +101,8 @@ public class NpcController : MonoBehaviour
     {
         while (_isShooting)
         {
+            // Warning: GetPooledObject() puede devolver null y GetRigidbody(null) iterar sobre el pool sin necesidad.
+            // Mejor pedir el bullet primero, chequear null y recién ahí pedir el Rigidbody.
             GameObject bullet = Bullets.instance.GetPooledObject();
             Rigidbody rb = Bullets.instance.GetRigidbody(bullet);
             if (bullet != null)
@@ -106,10 +113,14 @@ public class NpcController : MonoBehaviour
                 Vector3 playerPos = _placeToAim.transform.position;
                 Vector3 bulletDirection = (playerPos - bullet.transform.position).normalized;
 
+                // Warning: _data.shootingSpeed se usa acá como velocidad y abajo como cadencia (WaitForSeconds).
+                // El mismo número cumple dos roles distintos; imposible balancear cadencia sin cambiar velocidad.
                 rb.linearVelocity = bulletDirection * _data.shootingSpeed;
 
+                // Warning: Debug.Log dentro de la coroutine de disparo se ejecuta cada bala disparada. Con varios enemigos disparando seguido, inunda la consola y degrada performance.
                 Debug.Log("Enemy shot a bullet to (" + bulletDirection.x + ", " + bulletDirection.y + ", " + bulletDirection.z + ")");
             }
+            
             OnNpcShoot?.Invoke();
             yield return new WaitForSeconds(_shootingSpeed);
         }
@@ -120,6 +131,7 @@ public class NpcController : MonoBehaviour
     {
         if (isShooting)
         {
+            // Error: el if tiene cuerpo vacío Debería ser "if (_corroutineShoot == null) { ...arrancar... }" y sin else.
             if (_corroutineShoot != null) { }
             else
             {
@@ -147,7 +159,7 @@ public class NpcController : MonoBehaviour
         else
             SwitchState(FindState(StateType.Walk));
     }
-
+    
     private void SwitchState(EnemyStates newState)
     {
         if (currentState == newState)
@@ -167,6 +179,8 @@ public class NpcController : MonoBehaviour
         return null;
     }
 
+    // Warning: FindState es O(n) sobre _states y se llama DOS veces por frame desde acá (más una vez desde CheckForPlayer).
+    // Cachear las referencias a cada estado en Awake (ej: _stateWalk, _stateShoot) o usar Dictionary<StateType, EnemyStates>.
     private void MoveGun()
     {
         if (currentState == FindState(StateType.Walk))

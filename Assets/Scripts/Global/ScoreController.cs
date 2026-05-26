@@ -26,6 +26,7 @@ public class ScoreController : MonoBehaviour
 
     private void OnNpcKilled_ChangeScore(bool isEnemy)
     {
+        // Warning: _data.score se está escribiendo en un ScriptableObject. Persiste entre seciones
         if (isEnemy)
             _data.score += _pointsForEnemy;
         else

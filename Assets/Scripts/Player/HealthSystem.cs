@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+// Suggestion: esta clase y NpcHealthSystem tienen lógica casi idéntica (vida, daño, eventos Damaged/Die).
+// Extraer una clase base abstracta HealthBase o una interface IDamageable para evitar duplicación.
 public class HealthSystem : MonoBehaviour
 {
     public static event Action<int, int> OnUpdateLife;
@@ -28,7 +30,7 @@ public class HealthSystem : MonoBehaviour
     {
         CollisionController.OnPlayerCrashed -= OnPlayerCrashed_ReduceHealth;
     }
-
+    
     private void OnPlayerCrashed_ReduceHealth(int damage)
     {
         ChangeHealth(damage);
@@ -43,6 +45,7 @@ public class HealthSystem : MonoBehaviour
     {
         OnPlayerDamaged?.Invoke();
         _health -= damage;
+        
         Debug.Log("Player damaged by " + damage + " points");
         if (_health <= 0)
         {

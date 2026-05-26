@@ -14,6 +14,7 @@ public class KeyBindingsSO : ScriptableObject
     [Header("Camera Control")]
     public KeyCode changePOV;
     [Header("Pause")]
+    // Suggestion: en vez de pause/pause2/pause3 usar KeyCode[] pauseKeys para soportar N teclas sin agregar campos.
     public KeyCode pause;
     public KeyCode pause2;
     public KeyCode pause3;

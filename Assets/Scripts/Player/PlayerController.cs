@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private StatsDataSO _data;
 
+    // Warning: Una propiedad pública NO debería empezar con underscore;
+    // el prefijo "_" es para campos privados. Debería llamarse "Rb" o "Rigidbody" en PascalCase.
     public Rigidbody _rb { get; private set; }
 
     private bool _isAlive;
@@ -44,7 +46,7 @@ public class PlayerController : MonoBehaviour
             CheckSpeed();
         }
     }
-
+    
     private void MovementHor()
     {
         Vector3 direction = Vector3.zero;
@@ -73,6 +75,8 @@ public class PlayerController : MonoBehaviour
             _rb.AddForce(Vector3.down * _data.movementSpeedVer, ForceMode.Force);
     }
 
+    // Error: cada if reescribe el Vector3 entero con sólo un eje clampeado. Si dos ejes (ej: x e z) superan maxSpeed.
+    // Más limpio: usar Mathf.Clamp o Vector3.ClampMagnitude 
     private void CheckSpeed()
     {
         if (_rb.linearVelocity.x >= _data.maxSpeed)

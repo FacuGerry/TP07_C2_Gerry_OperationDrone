@@ -10,8 +10,10 @@ public class LevelManager : MonoBehaviour
     [SerializeField] private string _sceneToLoad = "Gameplay";
     [SerializeField] private List<NpcController> _npcList = new List<NpcController>();
 
+    // Warning: campo público; debería ser [SerializeField] private o propiedad con getter público.
     public int enemies = 0;
 
+    // Suggestion: typo "corroutine" → "coroutine". Aparece repetido en varios scripts del proyecto.
     private IEnumerator _corroutineCreating;
     private void Start()
     {
@@ -39,8 +41,9 @@ public class LevelManager : MonoBehaviour
 
     private IEnumerator CreatingEnemies()
     {
+        // Suggestion: paréntesis innecesarios en (_gameData.maxEnemies + 1). Random.Range(int,int) ya es exclusivo en el max.
         int numberOfEnemies = Random.Range(_gameData.minEnemies, (_gameData.maxEnemies + 1));
-
+        
         while (enemies < numberOfEnemies)
         {
             int randomEnemy = Random.Range(0, _npcList.Count);
@@ -51,6 +54,7 @@ public class LevelManager : MonoBehaviour
             }
             yield return null;
         }
+        // Suggestion: Baja - este "yield return null" final no aporta nada. La coroutine ya terminó al salir del while.
         yield return null;
     }
 
@@ -65,6 +69,10 @@ public class LevelManager : MonoBehaviour
 
     private void BuffEnemiesAndReload()
     {
+        // Error: _npcData.level, _gameData.minEnemies y _gameData.maxEnemies viven en ScriptableObjects.
+        // Los SO persisten entre Play sessions en el editor, así que estos incrementos quedan acumulados entre playtests
+        // (cada vez que entrás a Play, los enemigos arrancan más fuertes que la corrida anterior).
+        // Hay que resetear estos valores al inicio del juego o mover el estado a un componente runtime.
         _npcData.level++;
 
         _gameData.minEnemies++;

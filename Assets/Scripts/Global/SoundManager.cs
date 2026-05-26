@@ -31,6 +31,9 @@ public class SoundManager : MonoBehaviour
         _sliderSFX.onValueChanged.RemoveAllListeners();
     }
 
+    // Suggestion: extraer a const string para tenerlos centralizados.
+    // Bug: Baja - cuando el slider está en 0, Mathf.Log10(0) = -Infinity. El AudioMixer puede tolerarlo
+    // pero matemáticamente no es correcto. Solución: Clampear.
     public void OnMasterChanged(float vol)
     {
         _data.masterVol = vol;

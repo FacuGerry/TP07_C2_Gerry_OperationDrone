@@ -21,11 +21,15 @@ public class StateShoot : EnemyStates
     {
         if (_rb.linearVelocity != Vector3.zero)
             _rb.linearVelocity = Vector3.zero;
+        // Warning: EnableShooting(true) se llama TODOS los frames mientras este estado esté activo. Confía en el if vacío
+        // de NpcController.EnableShooting para no relanzar la coroutine, lo cual es frágil. Llamarlo sólo desde OnEnter.
         _patrol.EnableShooting(true);
 
+        // Warning: playerPos se calcula pero nunca se usa. Abajo se vuelve a leer _player.transform.position directamente.
         Vector3 playerPos = _player.transform.position;
 
         Quaternion lookAt = Quaternion.LookRotation(_player.transform.position - _patrol.transform.position);
+        // Warning: magic number 45 grados como corrección de rotación. Extraer a constante o a un campo serializado del NPC.
         Quaternion correction = Quaternion.Euler(0, 45, 0);
         _patrol.transform.rotation = lookAt * correction;
     }
